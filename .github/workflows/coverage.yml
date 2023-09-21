@@ -2,7 +2,7 @@ name: coverage
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, coverage_workflow ]
   pull_request:
     branches: [ master ]
 
