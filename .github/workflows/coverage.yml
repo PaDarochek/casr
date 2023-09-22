@@ -30,5 +30,5 @@ jobs:
         export CARGO_INCREMENTAL=0
         export RUSTFLAGS="-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests"
         export RUSTDOCFLAGS="-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests"
-        cargo test --release --verbose +nightly
+        cargo +nightly test --release --verbose
     - uses: actions-rs/grcov@v0.1
