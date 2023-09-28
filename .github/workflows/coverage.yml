@@ -35,6 +35,8 @@ jobs:
         rustup component add llvm-tools-preview
         cargo +nightly build --all-features --verbose
         cargo +nightly test --verbose
+    - name: Collect Coverage
+      run: |
         mkdir target/coverage
         grcov \
             . \
@@ -46,4 +48,7 @@ jobs:
             --excl-start '^(#\[cfg\(test\)\]|#\[test\])' \
             --excl-stop  '^}$' \
             -t html
-    - uses: actions-rs/grcov@v0.1
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
