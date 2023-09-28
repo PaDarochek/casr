@@ -24,7 +24,7 @@ jobs:
         ./rustup.sh -y && rm rustup.sh
         rustup install nightly
         export PATH=/root/.cargo/bin:$PATH
-        cargo install cargo-fuzz
+        cargo install cargo-fuzz grcov
     - name: Build and Run Tests
       env:
         CARGO_INCREMENTAL: 0
