@@ -15,9 +15,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build
-      run: cargo build --all-features --verbose
-    - name: Run tests
+    - name: Install Dependences
       run: |
         sudo apt update && sudo apt install -y gdb pip curl python3.10-dev llvm \
             openjdk-17-jdk
@@ -27,9 +25,25 @@ jobs:
         rustup install nightly
         export PATH=/root/.cargo/bin:$PATH
         cargo install cargo-fuzz
-        export CARGO_INCREMENTAL=0
-        export RUSTFLAGS="-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests"
-        export RUSTDOCFLAGS="-Zprofile -Ccodegen-units=1 -Cinline-threshold=0 -Clink-dead-code -Coverflow-checks=off -Cpanic=abort -Zpanic_abort_tests"
-        export LLVM_PROFILE_FILE="target/coverage/%p-%m.profraw"
-        cargo +nightly test --release --verbose --all-features --no-fail-fast
+    - name: Build and Run Tests
+      env:
+        CARGO_INCREMENTAL: 0
+        RUSTFLAGS: '-Cinstrument-coverage -Zprofile -Ccodegen-units=1 -Copt-level=0 -Clink-dead-code -Coverflow-checks=off -Zpanic_abort_tests -Cpanic=abort'
+        RUSTDOCFLAGS: '-Cpanic=abort'
+        LLVM_PROFILE_FILE: '%p-%m.profraw'
+      run: |
+        rustup component add llvm-tools-preview
+        cargo +nightly build --all-features --verbose
+        cargo +nightly test --verbose
+        mkdir target/coverage
+        grcov
+          .
+          --binary-path target/debug
+          -s .
+          -o target/coverage
+          --ignore-not-existing
+          --keep-only  '*casr/src*'
+          --excl-start '^(#\[cfg\(test\)\]|#\[test\])'
+          --excl-stop  '^}$'
+          -t html
     - uses: actions-rs/grcov@v0.1
