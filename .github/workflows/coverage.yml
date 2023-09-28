@@ -36,14 +36,14 @@ jobs:
         cargo +nightly build --all-features --verbose
         cargo +nightly test --verbose
         mkdir target/coverage
-        grcov
-          . \
-          --binary-path target/debug \
-          -s . \
-          -o target/coverage \
-          --ignore-not-existing \
-          --keep-only  '*casr/src*' \
-          --excl-start '^(#\[cfg\(test\)\]|#\[test\])' \
-          --excl-stop  '^}$' \
-          -t html
+        grcov \
+            . \
+            --binary-path target/debug \
+            -s . \
+            -o target/coverage \
+            --ignore-not-existing \
+            --keep-only  '*casr/src*' \
+            --excl-start '^(#\[cfg\(test\)\]|#\[test\])' \
+            --excl-stop  '^}$' \
+            -t html
     - uses: actions-rs/grcov@v0.1
