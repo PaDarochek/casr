@@ -188,6 +188,8 @@ fn main() -> Result<()> {
     // Get input file argument index.
     let at_index = if let Some(idx) = argv.iter().skip(1).position(|s| s.contains("@@")) {
         idx + 1
+    } else if tool.eq("casr-lua") {
+        0
     } else {
         argv.push("@@");
         argv.len() - 1
